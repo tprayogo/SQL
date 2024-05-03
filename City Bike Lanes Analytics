@@ -91,3 +91,17 @@ FROM safety_average_cte
 WHERE rating >=4
 -- THE CODE ABOVE THIS LINE IS A SQL QUERY THAT SELECTS FROM THE CTE --
 
+#3. Show the data with these conditions:
+  - bike lanes with an average safety rating of 4 or more should be labeled "Leave As-Is".
+  - Bike lanes with an average safety rating of less than 2.5 should be labeled as "Remove".
+  - All other bike lanes should be labeled as "Improvements Needed".
+
+SELECT street, safetyrating, AVG(safetyrating)
+OVER (PARTITION BY street) as "Average_Safety_Rating",
+CASE  WHEN AVG(safetyrating) OVER (PARTITION BY street) >=4 THEN "Leave AS-Is"
+      WHEN AVG(safetyrating) OVER (PARTITION BY street) <2.5 THEN "Remove"
+      ELSE "Improvement Needed"
+      END AS "Recommendation"
+FROM CityBikeLanes
+
+
